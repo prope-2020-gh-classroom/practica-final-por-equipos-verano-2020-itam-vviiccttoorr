@@ -1,0 +1,398 @@
+---
+title: "Casos COVID-19 confirmados en México"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: lumen
+    orientation: rows
+    vertical_layout: scroll
+    horizontal_layout: scroll
+    
+runtime: shiny
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(shiny)
+library(dplyr)
+library(flexdashboard)
+library(plotly)
+library(vistime)
+library(gridExtra)
+library(grid)
+library(ggplot2)
+library(kableExtra)
+library(data.table)
+library(knitr)
+library(tidyverse)
+library(lubridate)
+library(data.table)
+library(DT)
+```
+Información Nacional
+=====================================
+Row
+---------------------
+### $\textbf{¿Qué es?}$
+El coronavirus SARS-Cov-2 es un virus que apareció en China. Después se extendió a todos los continentes del mundo provocando una pandemia. Actualmente América es el continente más afectado.
+
+Este nuevo virus, provoca la enfermedad conocida con el nombre de COVID-19.
+
+
+### $\textbf{¿Cuáles son los síntomas?}$
+
+Las personas infectadas con COVID-19 tienen los siguientes signos y síntomas:
+
+$\bullet$ Tos y/o fiebre y/o dolor de cabeza.
+
+$\bullet$ Dolor o ardor de garganta, ojos rojos, dolores musculares o articulares (malestar general)
+
+$\bullet$ Los casos más graves presentan dificultades para respirar o falta de aire en los pulmones.
+
+
+### $\textbf{¿A qué personas afecta más?}$
+Afecta a todas las personas, pero las que más corren riesgo son:
+
+$\bullet$ Personas mayores.
+
+$\bullet$ Personas embarazadas
+
+$\bullet$ Personas con alguna enfermedad previa como cáncer, diabetes e hipertensión.
+
+row {height=1000}
+---------------------
+
+```{r, echo=FALSE,fig.align='right'}
+#nrow(data.frame(levels(areas$direccion)))
+
+pres <- data.frame(Position = rep(c("Primeros casos" ,"Duración contingencia"), 3),
+                   Name = c(rep("China",2), rep("Italia",2), rep("México",2)),
+                   start = c("2019-12-01","2020-01-23",  "2020-01-31","2020-02-21", 
+ "2020-02-27","2020-03-23"),
+                    end =c("2019-12-01","2020-04-08",
+                           "2020-01-31", "2020-05-18", "2020-02-27","2020-05-30"),
+                   color = c('#cbb69d', '#603913', '#c69c6e'),
+                   fontcolor = c("black", "white","black", "black","black", "black"))
+                  
+vistime(pres, events="Position", groups="Name", title="Primeros casos COVID-19 y duración de contingencia")
+
+```
+
+
+
+```{r, echo=FALSE}
+confirmados<-read.csv("Casos_Confirmados.csv")
+defunciones<-read.csv("Casos_Defunciones.csv")
+sospechosos<-read.csv("Casos_Sospechosos.csv")
+
+nacional_conf_ene<-sum(confirmados[33,c(4:23)])
+nacional_conf_feb<-sum(confirmados[33,c(24:52)])
+nacional_conf_mar<-sum(confirmados[33,c(53:83)])
+nacional_conf_abr<-sum(confirmados[33,c(84:113)])
+nacional_conf_may<-sum(confirmados[33,c(114:144)]) 
+nacional_conf_jun<-sum(confirmados[33,c(145:174)])
+nacional_conf_jul<-sum(confirmados[33,c(175:189)]) 
+
+meses<-c( "01-Enero", "02-Febrero", "03-Marzo", "04-Abril", "05-Mayo", "06-Junio", "07-Julio")
+nacional_confirmados<-data.frame(Mes= meses, Total=c(nacional_conf_ene,nacional_conf_feb,nacional_conf_mar,nacional_conf_abr,nacional_conf_may,nacional_conf_jun,nacional_conf_jul))
+
+
+```
+
+```{r,echo=FALSE}
+nacional_sosp_ene<-sum(sospechosos[33,c(4:6)])
+nacional_sosp_feb<-sum(sospechosos[33,c(7:35)])
+nacional_sosp_mar<-sum(sospechosos[33,c(36:66)])
+nacional_sosp_abr<-sum(sospechosos[33,c(67:96)])
+nacional_sosp_may<-sum(sospechosos[33,c(97:127)]) 
+nacional_sosp_jun<-sum(sospechosos[33,c(128:157)])
+nacional_sosp_jul<-sum(sospechosos[33,c(158:172)]) 
+
+nacional_sospechosos<-data.frame(nacional_sosp_ene,nacional_sosp_feb,nacional_sosp_mar,nacional_sosp_abr,nacional_sosp_may,nacional_sosp_jun,nacional_sosp_jul)
+names(nacional_sospechosos)<-c("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio")
+
+```
+
+```{r, echo=FALSE}
+nacional_def_mar<-sum(defunciones[33,c(4:18)])
+nacional_def_abr<-sum(defunciones[33,c(19:48)])
+nacional_def_may<-sum(defunciones[33,c(49:79)]) 
+nacional_def_jun<-sum(defunciones[33,c(80:109)])
+nacional_def_jul<-sum(defunciones[33,c(110:124)]) 
+
+nacional_defunciones<-data.frame(0,0,nacional_def_mar,nacional_def_abr,nacional_def_may,nacional_def_jun,nacional_def_jul)
+names(nacional_defunciones)<-c("Marzo", "Abril", "Mayo", "Junio", "Julio")
+
+```
+
+```{r, echo=FALSE}
+total_nacional<-data.frame(Mes=meses,Confirmados=c(nacional_conf_ene,nacional_conf_feb,nacional_conf_mar,nacional_conf_abr,nacional_conf_may,nacional_conf_jun,nacional_conf_jul), 
+Sospechosos=c(nacional_sosp_ene,nacional_sosp_feb,nacional_sosp_mar,nacional_sosp_abr,nacional_sosp_may,nacional_sosp_jun,nacional_sosp_jul) , 
+Defunciones= c(0,0,nacional_def_mar,nacional_def_abr,nacional_def_may,nacional_def_jun,nacional_def_jul))
+
+```
+
+
+```{r, echo=FALSE,fig.align='right'}
+ggplotly(ggplot(total_nacional, aes(x =Mes, y  =Confirmados))+ 
+geom_point(size =5,colour= "light pink") +   
+theme_minimal()+
+  ggtitle("Casos confirmados totales nivel nacional"))
+```
+
+Row
+-------------------------------------------------------------------------------------------
+```{r, echo=FALSE}
+#for (i in c(1:33)){
+#conf_ene[i]<-sum(confirmados[i,c(4:23)])
+#conf_feb[i]<-sum(confirmados[i,c(24:52)])
+#conf_mar[i]<-sum(confirmados[i,c(53:83)])
+#conf_abr[i]<-sum(confirmados[i,c(84:113)])
+#conf_may[i]<-sum(confirmados[i,c(114:144)]) 
+#conf_jun[i]<-sum(confirmados[i,c(145:174)])
+#conf_jul[i]<-sum(confirmados[i,c(175:189)])
+
+#Conf<-data.frame(Enero=conf_ene,Febrero=conf_feb,Marzo=conf_mar,Abril=conf_abr, Mayo=conf_may,Junio=conf_jun,Julio=conf_jul)
+#}
+
+#write.csv(Conf[1:32,], "conf.csv")
+
+conf<-read.csv("conf.csv")
+Conf<-cbind.data.frame(Entidad= confirmados$nombre[1:32],conf[,-1])
+
+renderDataTable(datatable(Conf))
+
+```
+
+
+```{r, echo=FALSE, fig.height=8,fig.align='center'}
+df_long<-confirmados %>%
+    pivot_longer(cols=starts_with("X"),
+                 names_to="fecha",
+                 values_to="casos")
+
+df_long$fecha<- df_long$fecha %>%
+                    str_remove("X") %>%
+                    dmy()
+
+confinamiento<-"2020-03-23"
+semaforo<-"2020-06-01"
+
+
+df_long$conf[df_long$fecha<confinamiento]<-'1. Inicio Pandemia'
+df_long$conf[df_long$fecha >=confinamiento & df_long$fecha<semaforo]<-'2. Confinamiento'
+df_long$conf[df_long$fecha>=semaforo]<-'3. Semaforo'
+
+
+
+
+
+# Se separan las cifras totales para el analisis por estado
+df_long_estados<-subset(df_long,nombre!='Nacional')
+
+
+renderPlotly(
+ggplotly(ggplot(subset(df_long,nombre=='Nacional'),aes(fill=conf,y=casos,x=conf)) +
+  geom_bar(position="dodge",stat="identity")+ xlab("Etapas del confinamiento")+ylab("Casos totales")+ggtitle("Casos confirmados a nivel nacional")+theme_minimal()))
+
+
+```
+
+
+Información Estatal
+=================================================================
+Row
+------------------------------------
+
+### Inicio de Jornada Nacional de Sana Distancia
+```{r, echo=FALSE}
+valueBox("23 de marzo")
+```
+
+### Inicio de Semáforo Nacional
+```{r, echo=FALSE}
+valueBox("01 de junio")
+```
+
+Row
+------------------------------------
+```{r, echo=FALSE}
+renderPlotly(
+ggplotly(
+ggplot(df_long_estados,aes(fill=conf,y=casos,x=conf)) +
+  geom_bar(position="dodge",stat="identity") +
+  ggtitle("Resultados de confinamiento por estado") +
+  facet_wrap(~nombre)+
+  theme(legend.position="none")+
+  xlab("")+theme_minimal())
+)
+
+```
+
+Row
+-------------------------------------------------------
+```{r,echo=FALSE}
+conf_est<-df_long_estados  %>%
+  group_by(nombre,conf) %>%
+  summarise(casos=sum(casos,na.rm=TRUE))%>%
+  spread(conf,casos)
+
+conf_est$delta<-conf_est$`3. Semaforo` - conf_est$`2. Confinamiento`
+
+Conf_Est<-cbind.data.frame(Estado=conf_est$nombre,"Confinamiento"=conf_est$`2. Confinamiento`,"Semáforo"=conf_est$`3. Semaforo`,Delta=conf_est$delta)
+
+renderDataTable(datatable(Conf_Est[order(conf_est$delta),]))
+
+```
+
+```{r,echo=FALSE, fig.align='right'}
+
+fig <- plot_ly(
+  x = conf_est$nombre[c(1:32)],
+  y = conf_est$delta,
+  type = "bar"
+)
+
+renderPlotly(fig%>% layout(title = "Crecimiento de confirmados al establecer semáforo",
+         xaxis = list(title = ""),
+         yaxis = list(title = "Delta")))
+```
+
+
+Row
+------------------------
+```{r,echo=FALSE}
+conf_est_por<-df_long_estados  %>%
+  group_by(nombre) %>%
+  summarise(casos=sum(casos,na.rm=TRUE),poblacion=max(poblacion))
+
+
+conf_est_por$porcentaje<-100*conf_est_por$casos/conf_est_por$poblacion
+
+renderPlotly(
+ggplotly(ggplot(conf_est_por,aes(x=poblacion,y=porcentaje))+
+  geom_point(size=6,col="lightblue") + labs( title= "Porcentaje de confirmados por poblacion", y="% Confirmados de la poblacion estatal", x = "Poblacion por estado")+geom_text(aes(label=nombre),hjust=0,vjust=0)+theme_minimal()))
+```
+
+Analisis de sensibilidad via regresion lineal
+=============================================================
+```{r,echo=FALSE, fig.align='center'}
+acum_dia<-df_long_estados  %>%
+  group_by(conf,fecha) %>%
+  summarise(casos=sum(casos,na.rm=TRUE))
+
+renderPlot(
+ggplot(acum_dia, aes(fecha,casos,group=conf,col=conf)) + 
+  geom_point() + geom_smooth(method=lm)+theme_minimal()+xlab("Mes")+ylab("Casos")
+)
+```
+
+Row {data-height=60}
+---------------------
+El periodo de confinamiento tienen mas casos totales que durante el inicio de la pandemia. No obstante, mediante el analisis de regresion simple se muestra que la pendiente de las tres fases es diferente; para la segunda fase (Confinamiento) es positiva y  para la tercera fase (Semáforo) es negativa. 
+Lo que podria indicarnos que existe un cambio en la tendencia de confirmados por Covid-19. Es muy importante seguir monitoreando este desempeño para verificar que este comportamiento sea sostenido en el tiempo.
+
+
+Movilidad
+=====================================
+```{r,echo=FALSE, fig.align='center'}
+
+Etapas<-df_long_estados$conf
+renderPlotly(
+ggplotly(
+ggplot(data=df_long_estados, aes(x= fecha, y=log(casos),colour=Etapas)) +
+    geom_line() +
+    facet_wrap(~nombre)+
+  theme_minimal()+
+  xlab("Mes")+ylab("Log(casos)")+ggtitle("Movilidad por estados"))
+)
+
+```
+
+Row {data-height=80}
+-----------------------------------------
+Podemos observar que hay más casos entre semana y los fines de semana disminuyen. Esto es debido a que la movilidad disminuía en fines de semana y aumentaba entre semana y también se debe al retraso administrativo en el reporte de casos durante el fin de semana por parte de la Secretaría de Salud. También podemos observar que parece haber una diminución de casos durante el mes de julio, pero esto también se debe a un retraso en el reporte de casos confirmados y que solamente estamos contemplando los datos del 1 al 15 de julio solamente. Por lo tanto, usaremos los datos disponibles hasta el 10 de julio, esta fecha la decidimos porque es la última fecha para la cual la cantidad de casos confirmados es más cercana a la cantidad reportada en la conferencia que realiza el gobierno de México.
+
+Row
+------------------------
+```{r, echo=FALSE}
+
+df_long<-df_long %>%
+            filter(fecha<=ymd(20200710))
+renderPlot(
+ggplot(subset(df_long,nombre=='Nacional'), aes(x= fecha, y=log(casos))) +
+    geom_line() + 
+    geom_smooth()+xlab("Meses")+ylab("Log(casos)")+ggtitle("Movilidad Nacional")+theme_minimal()
+)
+```
+
+
+Semáforo
+========================
+
+Row {data-height=50}
+--------------------------------
+Queremos saber el efecto que tendrá la reactivación de actividades en la cantidad de contagios. Por lo que solo vamos a seleccionar los estados que cambiaron a semáforo naranja a partir del 29 de junio de 2020.
+
+Row
+--------------------------------
+```{r, echo=FALSE}
+df_AGS<-df_long %>% filter(nombre=="AGUASCALIENTES")
+df_BCS<-df_long %>% filter(nombre=="BAJA CALIFORNIA SUR")
+df_CAM<-df_long %>% filter(nombre=="CAMPECHE")
+df_CHP<-df_long %>% filter(nombre=="CHIAPAS")
+df_CHI<-df_long %>% filter(nombre=="CHIHUAHUA")
+df_DF<-df_long %>% filter(nombre=="DISTRITO FEDERAL")
+df_COA<-df_long %>% filter(nombre=="COAHUILA")
+df_DUR<-df_long %>% filter(nombre=="DURANGO")
+df_GTO<-df_long %>% filter(nombre=="GUANAJUATO")
+df_JAL<-df_long %>% filter(nombre=="JALISCO")
+df_MCH<-df_long %>% filter(nombre=="MICHOACAN")
+df_QRO<-df_long %>% filter(nombre=="QUERETARO")
+df_QTN<-df_long %>% filter(nombre=="QUINTANA ROO")
+df_SLP<-df_long %>% filter(nombre=="SAN LUIS POTOSI")
+df_TAM<-df_long %>% filter(nombre=="TAMAULIPAS")
+df_VER<-df_long %>% filter(nombre=="VERACRUZ")
+df_YUC<-df_long %>% filter(nombre=="YUCATAN")
+df_ZAC<-df_long %>% filter(nombre=="ZACATECAS")
+```
+
+```{r, echo=FALSE,fig.align='center'}
+df_long_sem<-bind_rows(df_AGS, df_BCS, df_CAM, df_CHP, df_CHI, df_DF, df_COA, df_DUR, df_GTO, df_JAL, df_MCH, df_QRO, df_QTN, df_SLP, df_TAM, df_VER, df_YUC, df_ZAC)
+
+df_long_sem<-df_long_sem %>% 
+                          mutate(semaforo=ifelse(fecha>=ymd(20200629), "naranja", "rojo"))
+
+renderPlotly(
+ggplotly(
+ggplot(data=df_long_sem, aes(x= as.Date(fecha), y=casos, color=semaforo)) +geom_smooth() +
+    facet_wrap(~nombre)+ xlab("Mes")+theme_minimal()))
+```
+
+Row
+---------------------
+```{r,echo=FALSE}
+renderPlotly(
+  ggplotly(
+ggplot(data=df_long_sem, aes(x= fecha, y=log(casos), color=semaforo)) +
+    geom_smooth(method=lm) +
+    facet_wrap(~nombre)+ xlab("Mes")+theme_minimal())
+)
+```
+
+Row {data-height=50}
+----------------
+Para ver ver a mayor detalle, analizaremos el caso de la Ciudad de México
+
+Row
+-------------------
+```{r, echo=FALSE}
+renderPlotly(
+  ggplotly(
+ggplot(subset(df_long_sem, nombre=='DISTRITO FEDERAL'), aes(x= fecha, y=casos, color=semaforo)) +
+    geom_point() + 
+    geom_smooth(method=glm)+xlab("Mes")+theme_minimal()+ggtitle("CDMX glm"))
+)
+
+```
+
