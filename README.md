@@ -2,8 +2,10 @@
 
 El objetivo del trabajo es analizar los casos confirmados por COVID-19 en México a nivel nacional y estatal por 3 fases:
 
-1.- Inicio de pandemia 
+1.- Inicio de pandemia
+
 2.- Confinamiento
+
 3.- Regreso escalonado (semáforo) 
 
 Para el análisis de los datos usaremos R y para la presentación se creó un dashboard que se puede consultar dando click en la siguiente [liga]  (https://anatorresramirez.shinyapps.io/Practica_final/)
