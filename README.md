@@ -8,5 +8,10 @@ La información que usaremos serán los casos diarios por Estado al 15 de julio 
 
 
 
+Equipo 4
+|Integrante|User github|
+|:--:|:--:|
+|Yedam|yefovar|
+|Victor|vviiccttoorr|
+|Ana    | AnaTorresR|
 
-Integrantes del equipo
