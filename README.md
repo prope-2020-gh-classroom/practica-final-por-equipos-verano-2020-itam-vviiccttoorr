@@ -20,8 +20,8 @@ La project manager es: @AnaTorresR
 Equipo 4
 |Integrante|User github|
 |:--:|:--:|
-|Yedam|yefovar|
-|Victor|vviiccttoorr|
+|Yedam|[yefovar](https://github.com/yefovar)|
+|Victor|[vviiccttoorr](https://github.com/vviiccttoorr)|
 |Ana    | [AnaTorresR](https://github.com/AnaTorresR)|
 
 
