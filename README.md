@@ -1,12 +1,6 @@
 # Contagios de Covid en México por estado
 
-El objetivo del trabajo es analizar los casos confirmados por COVID-19 en México a nivel nacional y estatal por 3 fases:
-
-  1.- Inicio de pandemia
-
-  2.- Confinamiento
-
-  3.- Regreso escalonado (semáforo) 
+Analizar los casos confirmados de Covid19 por estados de la Republica Mexicana para conocer el efecto que tuvo el confinamiento y, actualmente, la reapertura escalonada en algunos estados.
 
 Para el análisis de los datos usaremos R y para la presentación se creó un dashboard que se puede consultar dando click en la siguiente [liga](https://anatorresramirez.shinyapps.io/Practica_final/)
 
