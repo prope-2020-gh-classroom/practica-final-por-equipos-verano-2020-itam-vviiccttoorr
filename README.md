@@ -6,8 +6,6 @@ El objetivo del trabajo es analizar los casos confirmados por COVID-19 en Méxic
 2.- Confinamiento
 3.- Semáforo 
 
-Para el análisis de los datos usaremos R y para la presentación se creó un dashboard que se puede consultar dando click en esta 
-[liga](https://anatorresramirez.shinyapps.io/Practica_final/)
 
 La información que usaremos serán los casos diarios por Estado al 15 de julio de 2020. La base de datos es pública y se encuentra en el [sitio web](https://coronavirus.gob.mx/datos/#DownZCSV) del Gobierno de México 
 
