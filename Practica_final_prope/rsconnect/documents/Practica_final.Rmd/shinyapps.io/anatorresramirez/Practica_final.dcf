@@ -1,0 +1,12 @@
+name: Practica_final
+title: Practica_final
+username:
+account: anatorresramirez
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2585360
+bundleId: 3406094
+url: https://anatorresramirez.shinyapps.io/Practica_final/
+when: 1595043560.86986
+asMultiple: FALSE
+asStatic: FALSE
